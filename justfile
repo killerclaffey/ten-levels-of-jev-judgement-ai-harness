@@ -65,6 +65,10 @@ jev9 option="":
 jev10 option="":
     cd "{{app}}" && node src/level.ts 10 {{option}}
 
+# Run an agentic level (6 to 10) option with OpenCode.
+agent level="6" option="A":
+    cd "{{app}}" && npm run -s agent {{level}} {{option}}
+
 # Every level, every option, mock backend.
 demo:
     cd "{{app}}" && npm run -s demo

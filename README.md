@@ -29,17 +29,17 @@ The `/install` command lives at `.claude/commands/install.md`. It checks Node, b
 
 ### Manual Install
 
-**Prereqs:** [Node 24](https://nodejs.org), [bun](https://bun.sh), [just](https://github.com/casey/just), [pi 0.85.1+](https://github.com/earendil-works/pi-mono) for levels 6 to 10, and an [OpenRouter key](https://openrouter.ai/keys) for live runs.
+**Prereqs:** [Node 24](https://nodejs.org), [bun](https://bun.sh), [just](https://github.com/casey/just), [OpenCode](https://opencode.ai) or [pi 0.85.1+](https://github.com/earendil-works/pi-mono) for levels 6 to 10, and an [OpenRouter key](https://openrouter.ai/keys) (or TypeSafe key) for live runs.
 
 ```bash
 cd apps/ten-levels/web && bun install && cd ../../..   # the Vue lab's dependencies; the levels themselves have none
 cp .env.sample .env                                    # then set OPENROUTER_API_KEY (or export it in your shell)
-npm install -g @earendil-works/pi-coding-agent         # pi, for levels 6 to 10
-just test                                              # 201 offline tests on the deterministic mock
+just test                                              # 206 offline tests on the deterministic mock
 just web                                               # build the lab and open it on http://127.0.0.1:4399
+just agent 6 A                                         # run any agent level (6-10, options A/B/C) via OpenCode or pi
 ```
 
-No key? Levels 1 to 5 still run on the offline mock. Levels 6 to 10 need both pi and the key.
+No key? Levels 1 to 5 still run on the offline mock. Levels 6 to 10 run with OpenCode (via `@opencode-ai/plugin` plugins in `apps/ten-levels/plugins/`) or pi (via extensions in `apps/ten-levels/extensions/`).
 
 ---
 
@@ -207,9 +207,9 @@ The agent router picks the harness (script, fast agent, reasoning agent, browser
   <img src="images/14_jev_across_the_harness.png" alt="Jev across the harness: levels 6 and 7 run at the tool call, tool result, and turn end hooks; levels 8, 9, and 10 are tools the agent calls" width="780">
 </p>
 
-Levels 1 to 5 call Jev from code. Levels 6 to 10 put Jev inside the [pi coding agent](https://github.com/earendil-works/pi-mono), and each level gives the agent more say over the questions. **Levels 6 and 7 are hooks:** the agent never asks, and Jev runs at the tool call, the tool result, and the turn end. **Levels 8, 9, and 10 are tools:** the agent decides when to call Jev, and by Level 10 it writes the questions itself.
+Levels 1 to 5 call Jev from code. Levels 6 to 10 put Jev inside an agent harness—supporting both **OpenCode** (via plugins) and the [pi coding agent](https://github.com/earendil-works/pi-mono) (via extensions)—and each level gives the agent more say over the questions. **Levels 6 and 7 are hooks:** the agent never asks, and Jev runs at the tool call, the tool result, and the turn end. **Levels 8, 9, and 10 are tools:** the agent decides when to call Jev, and by Level 10 it writes the questions itself.
 
-Each level is one pi extension in `apps/ten-levels/extensions/` that imports its decision code from `src/levels/`. The lab runs each one as a real pi session (a fast workhorse model by default, set with `JEV_AGENT_MODEL`) in a throwaway git copy of `sandbox/`, a small billing service with one failing test on purpose.
+Each level has an OpenCode plugin in `apps/ten-levels/plugins/` (`@opencode-ai/plugin`) and a pi extension in `apps/ten-levels/extensions/` importing decision code from `src/levels/`. The lab and CLI runner automatically detect OpenCode if available, falling back to pi, and run in a throwaway git sandbox of `sandbox/`, a small billing service with one failing test on purpose.
 
 ### Level 6: Guardrail Hooks
 
