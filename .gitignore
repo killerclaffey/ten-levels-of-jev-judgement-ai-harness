@@ -1,5 +1,8 @@
 .env
 node_modules/
+node_modules
+apps/ten-levels/node_modules
+.omo/
 .DS_Store
 apps/ten-levels/web/dist/
 apps/ten-levels/.sessions/

@@ -8,8 +8,9 @@ option is covered by tests. 201 offline tests, zero runtime dependencies, Node 2
 natively, no build step for the levels).
 
 ```
-npm test     # 201 tests across core + all 10 levels (offline, deterministic mock backend)
-npm run demo # print every level's three options running end to end
+npm test                 # 206 tests across core + all 10 levels (offline, deterministic mock backend)
+npm run demo             # print every level's three options running end to end
+npm run agent 6 A        # run any agent level (6-10, options A/B/C) in the terminal (OpenCode or pi)
 ```
 
 ## The live lab
@@ -20,8 +21,8 @@ npm run web   # → http://127.0.0.1:4399
 
 Ten level pages. Levels 1 to 5 run one call: edit the state, **Run live**, and read the request,
 the typed answers as probability bars, the response body, and a cost table against six chat models.
-Levels 6 to 10 open an **agent window**: a real `pi` session in a copy of `sandbox/`, with the
-level's extension loaded and an explicit tool allowlist. You prompt it, the box locks, Go becomes
+Levels 6 to 10 open an **agent window**: a real **OpenCode** (or `pi`) session in a copy of `sandbox/`, with the
+level's plugin/extension loaded and an explicit tool allowlist. You prompt it, the box locks, Go becomes
 Stop, and every tool call, hook decision, and Jev call lands as one line. Click a line for the
 details. The footer shows the model, the LLM cost, the Jev cost, and the context bar.
 
@@ -33,12 +34,11 @@ details. The footer shows the model, the LLM cost, the Jev cost, and the context
 | 9 Files at scale | the agent window: one Jev row per file, in parallel, then the pick |
 | 10 Agentic Jev | the agent window: ask_jev calls the agent chose to make, and the spend ledger |
 
-Live against OpenRouter when `OPENROUTER_API_KEY` is set (`JEV_BACKEND=mock` forces the offline
-mock for levels 1 to 5). The agent model defaults to `openrouter/google/gemini-3.8-flash`; override
-with `JEV_AGENT_MODEL`. The child pi never inherits `PI_MODEL`/`PI_PROVIDER` from a calling pi
-session. Extensions report every decision on stderr as `JEV_EVENT` lines and as session entries.
+Live against OpenRouter or TypeSafe when `OPENROUTER_API_KEY` or `TYPESAFE_API_KEY` is set (`JEV_BACKEND=mock` forces the offline
+mock for levels 1 to 5). The agent runner auto-detects `opencode` first, falling back to `pi`.
+OpenCode plugins live in `plugins/` (`@opencode-ai/plugin`), reporting decisions via stderr `JEV_EVENT` lines to the lab session.
 
-Tests: **201 offline** (`npm test`, mock backend) + **10 live** (`npm run test:live`, one per level).
+Tests: **206 offline** (`npm test`, mock backend) + **10 live** (`npm run test:live`, one per level).
 
 ## The ladder
 
