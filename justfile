@@ -14,7 +14,7 @@ default:
 web:
     cd "{{app}}/web" && bun run build
     lsof -tiTCP:4399 -sTCP:LISTEN | xargs -r kill
-    (sleep 1 && open http://127.0.0.1:4399) &!
+    (sleep 1 && (xdg-open http://127.0.0.1:4399 2>/dev/null || open http://127.0.0.1:4399 2>/dev/null || true)) &
     cd "{{app}}" && npm run -s web
 
 # Vite dev server with hot reload, proxied to a running `just web`.
@@ -64,6 +64,10 @@ jev9 option="":
 # Level 10: ask_jev on any content, unprompted.
 jev10 option="":
     cd "{{app}}" && node src/level.ts 10 {{option}}
+
+# Run an agentic level (6 to 10) option with OpenCode.
+agent level="6" option="A":
+    cd "{{app}}" && npm run -s agent {{level}} {{option}}
 
 # Every level, every option, mock backend.
 demo:
